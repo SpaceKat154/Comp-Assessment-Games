@@ -1,5 +1,5 @@
 /*******************************************************/
-// P5.play: GeoDash Demo Game
+// P5.play: SpaceShip Game
 // Demo Game
 // Written by Byron Thistoll
 /*******************************************************/
@@ -8,15 +8,17 @@ console.log("%c SpaceShip.js", "color: blue;");
 //variables
 const SCREENHEIGHT = 900;
 const SCREENWIDTH = 1920;
-const PLAYER_HEIGHT = 25;
-const PLAYER_WIDTH = 25;
-const OBSTACLE_HEIGHT = PLAYER_HEIGHT*2;
-const OBSTACLE_WIDTH = PLAYER_WIDTH;
+const spaceShip_HEIGHT = 25;
+const spaceShip_WIDTH = 25;
+const OBSTACLE_HEIGHT = spaceShip_HEIGHT*2;
+const OBSTACLE_WIDTH = spaceShip_WIDTH;
 var status = 'start';
 var score = 0;
-var obstacles;
+var asteroids;
 var nextSpawn = 0;
 var spawnDist = 0+1;
+var rNum1 = 20;
+var rNum2 = 200;
 /*******************************************************/
 // setup()
 /*******************************************************/
@@ -40,27 +42,29 @@ function setup() {
         }
         if (event.code === 'ArrowUp') {
             // Set sprite's velocity upwards
-            spaceShip.vel.y = (spaceShip.vel.y - 1);
+            spaceShip.direction = spaceShip.rotation - 90;
+            spaceShip.speed = spaceShip.speed + 1;
             console.log("go up");
         }
         if (event.code === 'ArrowDown') {
             // Set sprite's velocity upwards
-            spaceShip.vel.y = (spaceShip.vel.y + 1);
+            spaceShip.direction = spaceShip.rotation - 90;
+            spaceShip.speed = spaceShip.speed - 1;
             console.log("go down");
         }
         if (event.code === 'ArrowLeft') {
             // Set sprite's velocity upwards
-            spaceShip.vel.x = (spaceShip.vel.x - 1);
-            console.log("go left");
+            spaceShip.rotationSpeed = -2;
+            console.log("rotate left");
         }
         if (event.code === 'ArrowRight') {
             // Set sprite's velocity upwards
-            spaceShip.vel.x = (spaceShip.vel.x + 1);
-            console.log("go right");
+            spaceShip.rotationSpeed = 2;
+            console.log("rotate right");
         }
     });
-    obstacles = new Group();
-    spaceShip.collides(obstacles, deathScreen());
+    asteroids = new Group();
+    spaceShip.collides(asteroids, deathScreen());
 }
 
 /*******************************************************/
@@ -77,14 +81,14 @@ function draw() {
     }
 }
 
-function newObstacle(){
-    //Making obstacles - Called from GameScreen
-    astroid = new Sprite(random(SCREENWIDTH), random(SCREENHEIGHT), OBSTACLE_WIDTH, OBSTACLE_HEIGHT, 'k');
-    astroid.color = 'black';
-    astroid.bounciness = 0;
-    astroid.friction = 0;
-    astroid.moveTowards(spaceShip, 0.01);
-    obstacles.add(astroid);
+function newAsteroid(){
+    //Making asteroids - Called from GameScreen
+    asteroid = new Sprite(random(SCREENWIDTH), random(SCREENHEIGHT), OBSTACLE_WIDTH, OBSTACLE_HEIGHT, 'k');
+    asteroid.color = 'black';
+    asteroid.bounciness = 0;
+    asteroid.friction = 0;
+    asteroid.moveTowards(spaceShip, 0.01);
+    asteroids.add(asteroid);
 }
 
 function startScreen(){
@@ -106,17 +110,12 @@ function gameScreen(){
     background('blue');
     score++;
     if(frameCount > nextSpawn){
-        newObstacle();
-        nextSpawn = frameCount + random(20,200);
+        newAsteroid();
+        nextSpawn = frameCount + random(rNum1, rNum2);
     }
     allSprites.visible = true;
     
-    if (obstacles.collides(walls) == true) {
-        console.log('remove astroid');
-        
-    }
-    
-    if (obstacles.collides(spaceShip) == true) {
+    if (asteroids.collides(spaceShip) == true) {
         console.log('you died');
         status = 'death';
     }
