@@ -5,6 +5,15 @@
 /*******************************************************/
 console.log("%c SpaceShip.js", "color: blue;");
 
+/*******************************************************/
+// preload()
+// Called by P5 before setup
+/*******************************************************/
+function preload() {
+  console.log("preload: ");
+  imgSpaceShip = loadImage('/images/SpaceShip.png');
+}
+
 //variables
 const SCREENHEIGHT = 900;
 const SCREENWIDTH = 1920;
@@ -27,6 +36,8 @@ function setup() {
     console.log("setup: ");
     cnv = new Canvas(SCREENWIDTH, SCREENHEIGHT);
     spaceShip = new Sprite(SCREENWIDTH/2, SCREENHEIGHT/2, 50, 50, 'd');
+    spaceShip.addImage(imgSpaceShip);
+    imgSpaceShip.resize(100, 100);
     walls = new Group();
     wallLeft = new Sprite(0, SCREENHEIGHT/2, 5, SCREENHEIGHT, 's');
     walls.add(wallLeft)
@@ -48,8 +59,8 @@ function setup() {
         }
         if (event.code === 'ArrowDown') {
             // Set sprite's velocity upwards
-            spaceShip.direction = spaceShip.rotation - 90;
-            spaceShip.speed = spaceShip.speed - 1;
+            spaceShip.direction = spaceShip.rotation + 90;
+            spaceShip.speed = spaceShip.speed + 1;
             console.log("go down");
         }
         if (event.code === 'ArrowLeft') {
