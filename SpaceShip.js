@@ -59,19 +59,31 @@ function setup() {
         }
         if (event.code === 'ArrowDown') {
             // Set sprite's velocity upwards
-            spaceShip.direction = spaceShip.rotation + 90;
-            spaceShip.speed = spaceShip.speed + 1;
+            if ((spaceShip.speed >= 0) && (spaceShip.direction = spaceShip.rotation - 90)) {
+                spaceShip.direction = spaceShip.rotation - 90;
+                spaceShip.speed = spaceShip.speed - 1;
+            } else if (spaceShip.speed == 0) {
+                spaceShip.direction = spaceShip.rotation + 90;
+                spaceShip.speed = 1;
+            } else {
+                spaceShip.direction = spaceShip.rotation + 90;
+                spaceShip.speed = spaceShip.speed + 1;
+            }
             console.log("go down");
         }
         if (event.code === 'ArrowLeft') {
             // Set sprite's velocity upwards
-            spaceShip.rotationSpeed = -2;
-            console.log("rotate left");
+            if (spaceShip.rotationSpeed >= -6) {
+                spaceShip.rotationSpeed = spaceShip.rotationSpeed - 2;
+                console.log("rotate left");
+            }
         }
         if (event.code === 'ArrowRight') {
             // Set sprite's velocity upwards
-            spaceShip.rotationSpeed = 2;
-            console.log("rotate right");
+            if (spaceShip.rotationSpeed <= 6) {
+                spaceShip.rotationSpeed = spaceShip.rotationSpeed + 2;
+                console.log("rotate right");
+            }
         }
     });
     asteroids = new Group();
@@ -121,7 +133,7 @@ function gameScreen(){
     background('blue');
     score++;
     if(frameCount > nextSpawn){
-        newAsteroid();
+        //newAsteroid();
         nextSpawn = frameCount + random(rNum1, rNum2);
     }
     allSprites.visible = true;
