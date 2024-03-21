@@ -34,9 +34,13 @@ var rNum2 = 200;
 function setup() {
     //setup func - sets up all sprites and groups
     console.log("setup: ");
+    world.drag = 0.5;
     cnv = new Canvas(SCREENWIDTH, SCREENHEIGHT);
     spaceShip = new Sprite(SCREENWIDTH/2, SCREENHEIGHT/2, 50, 50, 'd');
     spaceShip.addImage(imgSpaceShip);
+    // for testing purposes
+    spaceShip.vel.x = -0.5;
+    //end of test setup
     imgSpaceShip.resize(100, 100);
     walls = new Group();
     wallLeft = new Sprite(0, SCREENHEIGHT/2, 5, SCREENHEIGHT, 's');
@@ -53,19 +57,24 @@ function setup() {
         }
         if (event.code === 'ArrowUp') {
             // Set sprite's velocity upwards
+            let tempX = spaceShip.vel.x;
+            let tempY = spaceShip.vel.y;
+            
             spaceShip.direction = spaceShip.rotation - 90;
-            spaceShip.speed = spaceShip.speed + 1;
+            
+            tempY -= 0.1;
+            
+            spaceShip.vel.x = tempX;
+            
+            spaceShip.vel.y = tempY;
             console.log("go up");
         }
         if (event.code === 'ArrowDown') {
             // Set sprite's velocity upwards
-            if ((spaceShip.speed >= 0) && (spaceShip.direction = spaceShip.rotation - 90)) {
+            if ((spaceShip.speed > 0) && (spaceShip.direction = spaceShip.rotation - 90)) {
                 spaceShip.direction = spaceShip.rotation - 90;
                 spaceShip.speed = spaceShip.speed - 1;
-            } else if (spaceShip.speed == 0) {
-                spaceShip.direction = spaceShip.rotation + 90;
-                spaceShip.speed = 1;
-            } else {
+            }  else if (spaceShip.speed <= 0 && (spaceShip.direction = spaceShip.rotation + 90)) {
                 spaceShip.direction = spaceShip.rotation + 90;
                 spaceShip.speed = spaceShip.speed + 1;
             }
@@ -95,6 +104,7 @@ function setup() {
 /*******************************************************/
 function draw() {
     //The draw loop
+    console.log (" v x "+spaceShip.vel.x+" vy "+spaceShip.vel.y)
     if (status == 'start'){
         startScreen();
     } else if (status == 'game') {
