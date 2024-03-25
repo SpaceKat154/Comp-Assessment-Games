@@ -62,8 +62,11 @@ function setup() {
             
             spaceShip.direction = spaceShip.rotation - 90;
             
+            console.log(spaceShip.direction);
             tempY -= 0.1;
             
+            tempX 
+            // CHANGING VELOCITY MECHANICS 
             spaceShip.vel.x = tempX;
             
             spaceShip.vel.y = tempY;
@@ -143,6 +146,7 @@ function gameScreen(){
     background('blue');
     score++;
     if(frameCount > nextSpawn){
+        //REMOVE BEFORE FINISHING GAME
         //newAsteroid();
         nextSpawn = frameCount + random(rNum1, rNum2);
     }
