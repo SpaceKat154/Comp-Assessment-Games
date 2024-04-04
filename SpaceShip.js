@@ -28,6 +28,7 @@ var nextSpawn = 0;
 var spawnDist = 0+1;
 var rNum1 = 20;
 var rNum2 = 200;
+
 /*******************************************************/
 // setup()
 /*******************************************************/
@@ -38,9 +39,6 @@ function setup() {
     cnv = new Canvas(SCREENWIDTH, SCREENHEIGHT);
     spaceShip = new Sprite(SCREENWIDTH/2, SCREENHEIGHT/2, 50, 50, 'd');
     spaceShip.addImage(imgSpaceShip);
-    // for testing purposes
-    spaceShip.vel.x = -0.5;
-    //end of test setup
     imgSpaceShip.resize(100, 100);
     walls = new Group();
     wallLeft = new Sprite(0, SCREENHEIGHT/2, 5, SCREENHEIGHT, 's');
@@ -56,24 +54,13 @@ function setup() {
            status = 'game';
         }
         if (event.code === 'ArrowUp') {
-            // Set sprite's velocity upwards
-            let tempX = spaceShip.vel.x;
-            let tempY = spaceShip.vel.y;
-            
-            spaceShip.direction = spaceShip.rotation - 90;
-            
-            console.log(spaceShip.direction);
-            tempY -= 0.1;
-            
-            tempX 
-            // CHANGING VELOCITY MECHANICS 
-            spaceShip.vel.x = tempX;
-            
-            spaceShip.vel.y = tempY;
-            console.log("go up");
+            // Set sprite's velocity in the direction its looking
+                spaceShip.direction = spaceShip.rotation - 90;
+                spaceShip.speed = spaceShip.speed + 1;
+                console.log("go up");
         }
         if (event.code === 'ArrowDown') {
-            // Set sprite's velocity upwards
+            // Set sprite's velocity in the opposite direction
             if ((spaceShip.speed > 0) && (spaceShip.direction = spaceShip.rotation - 90)) {
                 spaceShip.direction = spaceShip.rotation - 90;
                 spaceShip.speed = spaceShip.speed - 1;
@@ -84,14 +71,14 @@ function setup() {
             console.log("go down");
         }
         if (event.code === 'ArrowLeft') {
-            // Set sprite's velocity upwards
+            // Rotate Sprite to the left
             if (spaceShip.rotationSpeed >= -6) {
                 spaceShip.rotationSpeed = spaceShip.rotationSpeed - 2;
                 console.log("rotate left");
             }
         }
         if (event.code === 'ArrowRight') {
-            // Set sprite's velocity upwards
+            // Rotate Sprite to the right
             if (spaceShip.rotationSpeed <= 6) {
                 spaceShip.rotationSpeed = spaceShip.rotationSpeed + 2;
                 console.log("rotate right");
@@ -145,6 +132,8 @@ function gameScreen(){
     //The game screen - called from draw and startScreen
     background('blue');
     score++;
+    score = frameCount/60
+    score = round(score)
     if(frameCount > nextSpawn){
         //REMOVE BEFORE FINISHING GAME
         //newAsteroid();
