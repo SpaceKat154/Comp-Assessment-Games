@@ -1,6 +1,6 @@
 /*******************************************************/
 // P5.play: SpaceShip Game
-// Demo Game
+// Assessment Game
 // Written by Byron Thistoll
 /*******************************************************/
 console.log("%c SpaceShip.js", "color: blue;");
@@ -24,11 +24,12 @@ const SPACESHIPWIDTH = 50;
 const OBSTACLE_HEIGHT = SPACESHIPHEIGHT;
 const OBSTACLE_WIDTH = SPACESHIPWIDTH/2;
 var status = 'start';
-var timer = 0;
+var gameTime = 0;
+var displayTime = 0;
 var asteroids;
 var nextSpawn = 0;
 var spawnDist = 0+1;
-var rNum1 = 20;
+var rNum1 = 50;
 var rNum2 = 200;
 
 /*******************************************************/
@@ -119,15 +120,14 @@ function newAsteroid(){
 }
 
 function resetTimer(){
-    console.log("reset timer");
-    timer = 0;
+    console.log("reset time");
+    gameTime = 0;
 }
 
 function startScreen(){
     //Start Screen - called from draw
     background('gray');
     allSprites.visible = false;
-    resetTimer();
     textSize(32);
     textAlign(CENTER);
     fill(255);
@@ -136,7 +136,7 @@ function startScreen(){
     text("Welcome to Spaceship Game", SCREENWIDTH/2, 50);
     textSize(24);
     text("Press any key to start", SCREENWIDTH/2, 110);
-    text("Press Up Arrow To Move Forward.\nPress Down Arrow To Move Backwards.\nPress Left/Right Arrows to rotate.", SCREENWIDTH/2, 150);
+    text("Press Up Arrow To Move Forward.\nPress Down Arrow To Move Backwards.\nPress Left/Right Arrows to rotate.\nAvoid the asteroids and survive for as long as you can.", SCREENWIDTH/2, 150);
 }
 
 function gameScreen(){
@@ -144,9 +144,14 @@ function gameScreen(){
     background(imgBackground);
     console.log("Game");
     if (status == 'game'){
-     timer++;
-     timer = timer/60;
-     timer = round(timer);
+        console.log("time go up " + gameTime);
+        gameTime ++;
+        displayTime = gameTime/60;
+        displayTime = round(displayTime);
+    }
+    if(gameTime >= 60*60){
+        rNum1 = 20;
+        rNum2 = 150;
     }
     if(frameCount > nextSpawn){
         newAsteroid();
@@ -159,7 +164,7 @@ function gameScreen(){
         status = 'death';
     }
     textAlign(LEFT);
-    text("time: " + timer, 10, 25);
+    text("timer: " + displayTime, 10, 25);
 }
 
 function deathScreen() {
@@ -169,7 +174,7 @@ function deathScreen() {
     textAlign(CENTER);
     text("Haha you died", SCREENWIDTH/2, 50);
     text("get gud", SCREENWIDTH/2, 110);
-    text("your time survived was: " + timer, SCREENWIDTH/2, 150);
+    text("your time survived was: " + displayTime, SCREENWIDTH/2, 150);
 }
 /*******************************************************/
 //  END OF APP
