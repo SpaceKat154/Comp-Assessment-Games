@@ -20,10 +20,10 @@ function preload() {
 //variables
 const SCREENHEIGHT = 913;
 const SCREENWIDTH = 1920;
-const SPACESHIPHEIGHT = 50;
-const SPACESHIPWIDTH = 50;
-const OBSTACLE_HEIGHT = SPACESHIPHEIGHT;
-const OBSTACLE_WIDTH = SPACESHIPWIDTH/2;
+const SPACESHIPHEIGHT = 60;
+const SPACESHIPWIDTH = 40;
+const OBSTACLE_HEIGHT = 40;
+const OBSTACLE_WIDTH = 60;
 var status = 'start';
 var gameTime = 0;
 var displayTime = 0;
@@ -103,6 +103,7 @@ function setup() {
 function draw() {
     //The draw loop
     if (kb.pressing('p')) allSprites.debug = true;
+    if (kb.pressing('l')) allSprites.debug = false;
     if (status == 'start'){
         resetTimer()
         startScreen();
@@ -118,10 +119,10 @@ function newAsteroid(){
     //Making asteroids - Called from GameScreen
     asteroid = new Sprite(random(SCREENWIDTH), random(SCREENHEIGHT), OBSTACLE_WIDTH, OBSTACLE_HEIGHT, 'k');
     asteroid.addImage(imgAsteroid);
-    imgAsteroid.resize(100, 200);
+    imgAsteroid.resize(60, 60);
     asteroid.bounciness = 0;
     asteroid.friction = 0;
-    asteroid.moveTowards(spaceShip, 0.01);
+    //asteroid.moveTowards(spaceShip, 0.01);
     asteroid.rotationSpeed = random(-10, 10);
     asteroids.add(asteroid);
     
@@ -158,8 +159,8 @@ function gameScreen(){
         displayTime = gameTime/60;
         displayTime = round(displayTime);
     }
-    if(gameTime >= 60*60){
-        rNum1 = 20;
+    if(gameTime >= 3600){
+        rNum1 = 50;
         rNum2 = 150;
     }
     if(frameCount > nextSpawn){
