@@ -2,6 +2,7 @@
 // P5.play: SpaceShip Game
 // Assessment Game
 // Written by Byron Thistoll
+//hello
 /*******************************************************/
 console.log("%c SpaceShip.js", "color: blue;");
 
@@ -14,6 +15,7 @@ function preload() {
   imgSpaceShip = loadImage('/images/SpaceShip.png');
   imgAsteroid = loadImage('/images/Asteroid.png');
   imgBackground = loadImage('/images/SpaceBackground.png');
+  imgBullet = loadImage('/images/Bullet.png');
 }
 
 //variables
@@ -31,6 +33,7 @@ var nextSpawn = 0;
 var spawnDist = 0+1;
 var rNum1 = 50;
 var rNum2 = 200;
+var asteroid;
 
 /*******************************************************/
 // setup()
@@ -45,13 +48,17 @@ function setup() {
     imgSpaceShip.resize(100, 100);
     walls = new Group();
     wallLeft = new Sprite(0, SCREENHEIGHT/2, 5, SCREENHEIGHT, 's');
-    walls.add(wallLeft)
+    walls.add(wallLeft);
     wallRight = new Sprite(SCREENWIDTH, SCREENHEIGHT/2, 5, SCREENHEIGHT, 's');
-    walls.add(wallRight)
+    walls.add(wallRight);
     wallTop = new Sprite(SCREENWIDTH/2, 0, SCREENWIDTH, 5, 's');
-    walls.add(wallTop)
+    walls.add(wallTop);
     wallBot = new Sprite(SCREENWIDTH/2, SCREENHEIGHT, SCREENWIDTH, 5, 's');
-    walls.add(wallBot)
+    walls.add(wallBot);
+    bullet = new Sprite(spaceShip.x, spaceShip.y, SPACESHIPWIDTH/4, SPACESHIPHEIGHT/2, 'd');
+    bullet.visible = false;
+    bullet.addImage(imgBullet);
+    imgBullet.resize(25, 50);
     document.addEventListener("keydown", function(event) {
         if (status == 'start'){
            status = 'game';
@@ -87,9 +94,28 @@ function setup() {
                 console.log("rotate right");
             }
         }
+        //Chat GPT helped me here
+        if (key == ' ') {
+            console.log("bullet go forwards");
+            bullet.x = spaceShip.x;
+            bullet.y = spaceShip.y;
+            bullet.direction = spaceShip.direction;
+            bullet.speed = spaceShip.speed + 5;
+
+            // Convert spaceship rotation to radians
+            let radians = spaceShip.rotation * Math.PI / 180;
+
+            // Calculate velocity components
+            bullet.vx = Math.cos(radians) * (bullet.speed);
+            bullet.vy = Math.sin(radians) * (bullet.speed);
+            
+            // Set bullet rotation to match spaceship rotation
+            bullet.rotation = spaceShip.rotation;
+        }
+        //End of Chat GPT's help
+
     });
     asteroids = new Group();
-    spaceShip.collides(asteroids, deathScreen());
 }
 
 /*******************************************************/
@@ -97,6 +123,7 @@ function setup() {
 /*******************************************************/
 function draw() {
     //The draw loop
+    if (kb.pressing('p')) allSprites.debug = true;
     if (status == 'start'){
         resetTimer()
         startScreen();
@@ -116,12 +143,23 @@ function newAsteroid(){
     asteroid.bounciness = 0;
     asteroid.friction = 0;
     asteroid.moveTowards(spaceShip, 0.01);
+    asteroid.rotationSpeed = random(-10, 10);
     asteroids.add(asteroid);
+    
+    asteroids.push(asteroid);
 }
 
 function resetTimer(){
     console.log("reset time");
     gameTime = 0;
+}
+
+function checkCollision(bullet, asteroid) {
+    
+}
+
+function destroyAsteroids(_bullet, _asteroid){
+    _asteroid.remove();
 }
 
 function startScreen(){
@@ -141,10 +179,12 @@ function startScreen(){
 
 function gameScreen(){
     //The game screen - called from draw and startScreen
+    spaceShip.collides(asteroids, deathScreen());
+    bullet.collides(asteroids, destroyAsteroids());
     background(imgBackground);
-    console.log("Game");
+    //console.log("Game");
     if (status == 'game'){
-        console.log("time go up " + gameTime);
+        //console.log("time go up " + gameTime);
         gameTime ++;
         displayTime = gameTime/60;
         displayTime = round(displayTime);
@@ -158,6 +198,26 @@ function gameScreen(){
         nextSpawn = frameCount + random(rNum1, rNum2);
     }
     allSprites.visible = true;
+    
+    //Chat GPT Assisted
+    if (checkCollision(bullet, asteroid)) {
+        // Find the index of the asteroid in the array
+        let index = asteroids.indexOf(asteroid);
+    
+        // Remove the asteroid from the array
+        if (index !== -1) {
+            asteroids.splice(index, 1);
+        }
+    }
+    for (let i = asteroids.length - 1; i >= 0; i--) {
+        let asteroid = asteroids[i];
+        if (checkCollision(bullet, asteroid)) {
+            // Remove the asteroid from the array and the scene
+            asteroid.remove();
+            asteroids.splice(i, 1);
+        }
+    }
+    //End of Chat GPT Assistance
     
     if (asteroids.collides(spaceShip) == true) {
         console.log('you died');
