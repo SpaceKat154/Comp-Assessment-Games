@@ -27,7 +27,7 @@ const OBSTACLE_WIDTH = 60;
 var status = 'start';
 var gameTime = 0;
 var displayTime = 0;
-var asteroids;
+var asteroidsGroup;
 var nextSpawn = 0;
 var spawnDist = 0+1;
 var rNum1 = 50;
@@ -40,7 +40,6 @@ var asteroid;
 function setup() {
     //setup func - sets up all sprites and groups
     console.log("setup: ");
-    world.drag = 0.5;
     cnv = new Canvas(SCREENWIDTH, SCREENHEIGHT);
     spaceShip = new Sprite(SCREENWIDTH/2, SCREENHEIGHT/2, SPACESHIPWIDTH, SPACESHIPHEIGHT, 'd');
     spaceShip.addImage(imgSpaceShip);
@@ -99,8 +98,8 @@ function setup() {
             }
         }
     });
-    asteroids = new Group();
-    spaceShip.collides(asteroids, deathScreen());
+    asteroidsGroup = new Group();
+    spaceShip.collides(asteroidsGroup, deathScreen());
 }
 
 /*******************************************************/
@@ -128,9 +127,9 @@ function newAsteroid(){
     imgAsteroid.resize(60, 60);
     asteroid.bounciness = 0;
     asteroid.friction = 0;
-    //asteroid.moveTowards(spaceShip, 0.01);
+    asteroid.moveTowards(spaceShip, 0.01);
     asteroid.rotationSpeed = random(-10, 10);
-    asteroids.add(asteroid);
+    asteroidsGroup.add(asteroid);
 }
 
 function resetTimer(){
@@ -173,7 +172,7 @@ function gameScreen(){
     }
     allSprites.visible = true;
     
-    if (asteroids.collides(spaceShip) == true) {
+    if (asteroidsGroup.collides(spaceShip) == true) {
         console.log('you died');
         status = 'death';
     }
