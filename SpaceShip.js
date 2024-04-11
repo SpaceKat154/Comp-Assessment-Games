@@ -83,12 +83,18 @@ function setup() {
             if (spaceShip.rotationSpeed >= -6) {
                 spaceShip.rotationSpeed = spaceShip.rotationSpeed - 2;
                 console.log("rotate left");
+            } else {
+                spaceShip.rotationSpeed = -6;
+                console.log("rotate left");
             }
         }
         if (event.code === 'ArrowRight') {
             // Rotate Sprite to the right
             if (spaceShip.rotationSpeed <= 6) {
                 spaceShip.rotationSpeed = spaceShip.rotationSpeed + 2;
+                console.log("rotate right");
+            } else {
+                spaceShip.rotationSpeed = 6;
                 console.log("rotate right");
             }
         }
@@ -125,8 +131,6 @@ function newAsteroid(){
     //asteroid.moveTowards(spaceShip, 0.01);
     asteroid.rotationSpeed = random(-10, 10);
     asteroids.add(asteroid);
-    
-    asteroids.push(asteroid);
 }
 
 function resetTimer(){
