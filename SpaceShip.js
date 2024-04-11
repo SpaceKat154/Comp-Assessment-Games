@@ -15,7 +15,6 @@ function preload() {
   imgSpaceShip = loadImage('/images/SpaceShip.png');
   imgAsteroid = loadImage('/images/Asteroid.png');
   imgBackground = loadImage('/images/SpaceBackground.png');
-  imgBullet = loadImage('/images/Bullet.png');
 }
 
 //variables
@@ -55,26 +54,25 @@ function setup() {
     walls.add(wallTop);
     wallBot = new Sprite(SCREENWIDTH/2, SCREENHEIGHT, SCREENWIDTH, 5, 's');
     walls.add(wallBot);
-    bullet = new Sprite(spaceShip.x, spaceShip.y, SPACESHIPWIDTH/4, SPACESHIPHEIGHT/2, 'd');
-    bullet.visible = false;
-    bullet.addImage(imgBullet);
-    imgBullet.resize(25, 50);
     document.addEventListener("keydown", function(event) {
         if (status == 'start'){
            status = 'game';
         }
         if (event.code === 'ArrowUp') {
             // Set sprite's velocity in the direction its looking
+            if (spaceShip.direction == spaceShip.rotation + 90) {
+                spaceShip.speed = spaceShip.speed - 1;
+            }  else {
                 spaceShip.direction = spaceShip.rotation - 90;
                 spaceShip.speed = spaceShip.speed + 1;
-                console.log("go up");
+            }
+            console.log("go up");
         }
         if (event.code === 'ArrowDown') {
             // Set sprite's velocity in the opposite direction
-            if ((spaceShip.speed > 0) && (spaceShip.direction = spaceShip.rotation - 90)) {
-                spaceShip.direction = spaceShip.rotation - 90;
+            if (spaceShip.direction == spaceShip.rotation - 90) {
                 spaceShip.speed = spaceShip.speed - 1;
-            }  else if (spaceShip.speed <= 0 && (spaceShip.direction = spaceShip.rotation + 90)) {
+            }  else {
                 spaceShip.direction = spaceShip.rotation + 90;
                 spaceShip.speed = spaceShip.speed + 1;
             }
@@ -94,28 +92,9 @@ function setup() {
                 console.log("rotate right");
             }
         }
-        //Chat GPT helped me here
-        if (key == ' ') {
-            console.log("bullet go forwards");
-            bullet.x = spaceShip.x;
-            bullet.y = spaceShip.y;
-            bullet.direction = spaceShip.direction;
-            bullet.speed = spaceShip.speed + 5;
-
-            // Convert spaceship rotation to radians
-            let radians = spaceShip.rotation * Math.PI / 180;
-
-            // Calculate velocity components
-            bullet.vx = Math.cos(radians) * (bullet.speed);
-            bullet.vy = Math.sin(radians) * (bullet.speed);
-            
-            // Set bullet rotation to match spaceship rotation
-            bullet.rotation = spaceShip.rotation;
-        }
-        //End of Chat GPT's help
-
     });
     asteroids = new Group();
+    spaceShip.collides(asteroids, deathScreen());
 }
 
 /*******************************************************/
@@ -154,14 +133,6 @@ function resetTimer(){
     gameTime = 0;
 }
 
-function checkCollision(bullet, asteroid) {
-    
-}
-
-function destroyAsteroids(_bullet, _asteroid){
-    _asteroid.remove();
-}
-
 function startScreen(){
     //Start Screen - called from draw
     background('gray');
@@ -179,8 +150,6 @@ function startScreen(){
 
 function gameScreen(){
     //The game screen - called from draw and startScreen
-    spaceShip.collides(asteroids, deathScreen());
-    bullet.collides(asteroids, destroyAsteroids());
     background(imgBackground);
     //console.log("Game");
     if (status == 'game'){
@@ -199,26 +168,6 @@ function gameScreen(){
     }
     allSprites.visible = true;
     
-    //Chat GPT Assisted
-    if (checkCollision(bullet, asteroid)) {
-        // Find the index of the asteroid in the array
-        let index = asteroids.indexOf(asteroid);
-    
-        // Remove the asteroid from the array
-        if (index !== -1) {
-            asteroids.splice(index, 1);
-        }
-    }
-    for (let i = asteroids.length - 1; i >= 0; i--) {
-        let asteroid = asteroids[i];
-        if (checkCollision(bullet, asteroid)) {
-            // Remove the asteroid from the array and the scene
-            asteroid.remove();
-            asteroids.splice(i, 1);
-        }
-    }
-    //End of Chat GPT Assistance
-    
     if (asteroids.collides(spaceShip) == true) {
         console.log('you died');
         status = 'death';
@@ -234,7 +183,7 @@ function deathScreen() {
     textAlign(CENTER);
     text("Haha you died", SCREENWIDTH/2, 50);
     text("get gud", SCREENWIDTH/2, 110);
-    text("your time survived was: " + displayTime, SCREENWIDTH/2, 150);
+    text("your time survived was: " + displayTime + " Seconds", SCREENWIDTH/2, 150);
 }
 /*******************************************************/
 //  END OF APP
